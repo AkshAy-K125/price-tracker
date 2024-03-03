@@ -121,7 +121,7 @@ const TrackingPage = ({ usermail }) => {
         newEntry.tracker_details.last_triggeres.push("00:00 AM 0st April 0000");
     }
 
-    useEffect(() => {
+    useEffect((newEntry) => {
 
         set_userData(newEntry)
 
