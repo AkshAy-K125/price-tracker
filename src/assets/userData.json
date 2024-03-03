@@ -1,0 +1,32 @@
+{
+    "user_details": {
+        "name": "Akshay Kumar",
+        "email_ID": "akshaysparks125"
+    },
+    "tracker_details": {
+        "product_titles": [
+            "Prod1",
+            "Prod2"
+        ],
+        "product_prices": [
+            22.656,
+            5478.25
+        ],
+        "track_links": [
+            "https://www.amazon.in/boAt-Rockerz-255-Pro-Earphones/dp/B08TV2P1N8/ref=sr_1_1?_encoding=UTF8&content-id=amzn1.sym.e08c6279-844d-49c6-8e7c-3fcd4b905908&pd_rd_r=c0ff59dd-08c6-45c3-b81c-5d6cce1a7021&pd_rd_w=rHqIf&pd_rd_wg=abIuR&pf_rd_p=e08c6279-844d-49c6-8e7c-3fcd4b905908&pf_rd_r=04KJPZBAWQSB1HP84Z11&qid=1706616178&sr=8-1",
+            "https://www.amazon.in/FUNDAY-FASHION-Sleeve-Womens-Jacket/dp/B084HDZTJW/ref=sr_1_2?_encoding=UTF8&content-id=amzn1.sym.74f25a9d-e850-443b-a26a-da459bed7e95&pd_rd_r=33e9b6b3-80ce-43ff-acee-9b9d1851dc21&pd_rd_w=T7KSD&pd_rd_wg=99fA3&pf_rd_p=74f25a9d-e850-443b-a26a-da459bed7e95&pf_rd_r=T3B1VXVSH07A3SKAZMXT&qid=1706616219&refinements=p_n_specials_match%3A21618256031%2Cp_85%3A10440599031%2Cp_n_feature_nineteen_browse-bin%3A11301357031&rnid=11301356031&rps=1&s=apparel&sr=1-2"
+        ],
+        "track_prices": [
+            20.589,
+            5000
+        ],
+        "track_freq": [
+            5,
+            10
+        ],
+        "last_triggeres": [
+            " 12:00 PM 5th June 2023",
+            "03:00 AM 1st April 2024"
+        ]
+    }
+}

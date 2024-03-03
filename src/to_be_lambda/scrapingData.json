@@ -1,0 +1,110 @@
+{
+    "bahraingreetings": {
+        "link": "https://bahraingreetings.com/",
+        "Target_ProductName": "product-title product_title entry-title",
+        "Target_ProductName_RegEx": "",
+        "Target_ProductName_Remarks": "h1",
+        "Target_PriceSymbol": "woocommerce-Price-currencySymbol",
+        "Target_PriceSymbol_RegEx": "",
+        "Target_PriceSymbol_Remarks": "span",
+        "Target_Price": "woocommerce-Price-amount amount",
+        "Target_Price_RegEx": "",
+        "Target_Price_Remarks": "span"
+    },
+    "dukakeen": {
+        "link": "https://www.dukakeen.com/",
+        "Target_ProductName": "product_title entry-title",
+        "Target_ProductName_RegEx": "",
+        "Target_ProductName_Remarks": "h1",
+        "Target_PriceSymbol": "woocommerce-Price-currencySymbol",
+        "Target_PriceSymbol_RegEx": "",
+        "Target_PriceSymbol_Remarks": "span",
+        "Target_Price": "woocommerce-Price-amount amount",
+        "Target_Price_RegEx": "",
+        "Target_Price_Remarks": "span"
+    },
+    "livewell": {
+        "link": "https://livewell.bh/",
+        "Target_ProductName": "product_title entry-title",
+        "Target_ProductName_RegEx": "",
+        "Target_ProductName_Remarks": "",
+        "Target_PriceSymbol": "woocommerce-Price-currencySymbol",
+        "Target_PriceSymbol_RegEx": "",
+        "Target_PriceSymbol_Remarks": "span",
+        "Target_Price": "woocommerce-Price-amount amount",
+        "Target_Price_RegEx": "",
+        "Target_Price_Remarks": "span"
+    },
+    "luluhypermarket": {
+        "link": "https://www.luluhypermarket.com/en-bh",
+        "Target_ProductName": "product-name",
+        "Target_ProductName_RegEx": "",
+        "Target_ProductName_Remarks": "h1",
+        "Target_PriceSymbol": "item price",
+        "Target_PriceSymbol_RegEx": "",
+        "Target_PriceSymbol_Remarks": "span",
+        "Target_Price": "item price",
+        "Target_Price_RegEx": "",
+        "Target_Price_Remarks": "span"
+    },
+    "namshi": {
+        "link": "https://www.namshi.com/bahrain-en/men/for-you/",
+        "Target_ProductName": "ProductConversion_productTitle__dvlc5",
+        "Target_ProductName_RegEx": "",
+        "Target_ProductName_Remarks": "h1",
+        "Target_PriceSymbol": "ProductPrice_currency__issmK",
+        "Target_PriceSymbol_RegEx": "",
+        "Target_PriceSymbol_Remarks": "span",
+        "Target_Price": "ProductPrice_value__hnFSS",
+        "Target_Price_RegEx": "",
+        "Target_Price_Remarks": "span"
+    },
+    "nextdirect": {
+        "link": "https://www.nextdirect.com/bh/en",
+        "Target_ProductName": "Title",
+        "Target_ProductName_RegEx": "",
+        "Target_ProductName_Remarks": "div",
+        "Target_PriceSymbol": "nowPrice",
+        "Target_PriceSymbol_RegEx": "",
+        "Target_PriceSymbol_Remarks": "div",
+        "Target_Price": "nowPrice",
+        "Target_Price_RegEx": "",
+        "Target_Price_Remarks": "div"
+    },
+    "ootlah": {
+        "link": "https://www.ootlah.com/en/",
+        "Target_ProductName": "package-gallery-holder",
+        "Target_ProductName_RegEx": "",
+        "Target_ProductName_Remarks": "div",
+        "Target_PriceSymbol": "mobile-price",
+        "Target_PriceSymbol_RegEx": "",
+        "Target_PriceSymbol_Remarks": "div",
+        "Target_Price": "mobile-price",
+        "Target_Price_RegEx": "",
+        "Target_Price_Remarks": "div"
+    },
+    "ounass": {
+        "link": "https://bahrain.ounass.com/",
+        "Target_ProductName": "PDPDesktop-name",
+        "Target_ProductName_RegEx": "",
+        "Target_ProductName_Remarks": "h1",
+        "Target_PriceSymbol": "PriceContainer-price",
+        "Target_PriceSymbol_RegEx": "",
+        "Target_PriceSymbol_Remarks": "span",
+        "Target_Price": "PriceContainer-price",
+        "Target_Price_RegEx": "",
+        "Target_Price_Remarks": "span"
+    },
+    "sharafdg": {
+        "link": "https://bahrain.sharafdg.com/",
+        "Target_ProductName": "product_title entry-title",
+        "Target_ProductName_RegEx": "",
+        "Target_ProductName_Remarks": "h1",
+        "Target_PriceSymbol": "currency",
+        "Target_PriceSymbol_RegEx": "",
+        "Target_PriceSymbol_Remarks": "span",
+        "Target_Price": "total--sale-price",
+        "Target_Price_RegEx": "",
+        "Target_Price_Remarks": "span"
+    }
+}
