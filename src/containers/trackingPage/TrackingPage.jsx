@@ -10,11 +10,9 @@ import './trackingPage.css';
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 
-const apiCall_for_mongo = async (redirectParam, id, userData) => {
+import { produce } from 'immer';
 
-    // const myHeaders = new Headers();
-    // myHeaders.append("x-api-key", );
-    // myHeaders.append("Content-Type", "application/json");
+const apiCall_for_mongo = async (redirectParam, id, userData) => {
 
     const raw = JSON.stringify({
         "function_redirect": redirectParam,
@@ -53,14 +51,10 @@ const TrackingPage = ({ email_ID }) => {
     useEffect(() => {
 
         if (location.state !== null) {
-            console.log(location.state)
             set_userData(location.state.document)
         }
         else {
-            console.log(userData)
-            console.log("enteres else")
             const userDetailsFetch = async (id) => {
-                console.log(id)
                 const data = await apiCall_for_mongo("user_check", email_ID, userData)
 
                 set_triggerPriceArray(new Array(data.document.tracker_details.track_prices.length).fill(1))
@@ -75,49 +69,54 @@ const TrackingPage = ({ email_ID }) => {
     const priceEditClickHandler = (preferenceDivID) => {
 
         const newArray = [...triggerPriceArray]
-        newArray[preferenceDivID] = 0
+        newArray[preferenceDivID] = !newArray[preferenceDivID]
         set_triggerPriceArray(newArray)
-
-
-        // document.getElementById("trigger_price_div" + preferenceDivID).innerHTML(`<input min="0" placeholder='Dream Price' type="number" className="form-control" />
-        // `)
-
-        // const updatedData = { ...userData };
-        // updatedData.tracker_details.track_prices[preferenceDivID - 1] = 0;
-        // set_userData(updatedData)
-
     }
 
     const frequencyEditClickHandler = (preferenceDivID) => {
 
         const newArray = [...triggerFreqArray]
-        newArray[preferenceDivID] = 0
+        newArray[preferenceDivID] = !newArray[preferenceDivID]
         set_triggerFreqArray(newArray)
 
     }
 
     const saveClickHandler = (preferenceDivID) => {
 
-        // if (document.getElementById("dreamPrice" + preferenceDivID)
-        //     || document.getElementById("frequency" + preferenceDivID)) {
+        set_userData(
+            produce(userData, (draft) => {
+                var priceEle = document.getElementById("dreamPrice" + preferenceDivID)
+                var freqEle = document.getElementById("frequency" + preferenceDivID)
 
-        // const updatedData = JSON.parse(JSON.stringify(userData))
-        const updatedData = { ...userData }
+                if (priceEle) {
 
-        updatedData.tracker_details.track_prices[preferenceDivID] = 100
-        // parseFloat(document.getElementById("dreamPrice" + preferenceDivID).value);
+                    priceEditClickHandler(preferenceDivID)
 
-        // document.getElementById("dreamPrice" + preferenceDivID).value == null ?
-        //     updatedData.tracker_details.track_prices[preferenceDivID] :
-        //     parseFloat(document.getElementById("dreamPrice" + preferenceDivID).value);
-        console.log(userData)
-        console.log(updatedData)
+                    if (priceEle.value) { draft.tracker_details.track_prices[preferenceDivID] = parseFloat(priceEle.value) }
+                }
 
-        set_userData({
-            ...userData,
-            name: "Peter"
-        })
-        //        }
+                if (freqEle) {
+
+                    frequencyEditClickHandler(preferenceDivID)
+
+                    if (freqEle.value) { draft.tracker_details.track_freq[preferenceDivID] = parseFloat(freqEle.value) }
+                }
+            })
+        );
+
+    }
+
+    const deleteClickHandler = (preferenceDivID) => {
+
+        set_userData(
+            produce(userData, (draft) => {
+
+                for (const ele in draft.tracker_details) {
+                    draft.tracker_details[ele].splice(preferenceDivID, 1);
+                }
+
+            })
+        );
     }
 
 
@@ -130,74 +129,76 @@ const TrackingPage = ({ email_ID }) => {
                             <Accordion defaultActiveKey="0">
                                 {
                                     userData.tracker_details.product_titles.map((product, index) => {
-                                        return (<Accordion.Item eventKey={index} key={index}>
-                                            <Accordion.Header>
-                                                <div>
-                                                    <div>
-                                                        {product}
-                                                    </div>
-                                                    <br />
-                                                    <div>
-                                                        {userData.tracker_details.product_prices[index]}
-                                                    </div>
-                                                </div>
-                                            </Accordion.Header>
-                                            <Accordion.Body>
-                                                <div>
+                                        return (
+                                            <Accordion.Item eventKey={index} key={index}>
+                                                <Accordion.Header>
                                                     <div>
                                                         <div>
-                                                            Product Name:
-                                                            <a className="prod_Links" rel="noreferrer" target="_blank" href={userData.tracker_details.track_links[index]}>
-                                                                {product}
-                                                            </a>
+                                                            {product}
                                                         </div>
+                                                        <br />
                                                         <div>
-                                                            Product Current Price: {userData.tracker_details.product_prices[index]}
+                                                            {userData.tracker_details.product_prices[index]}
                                                         </div>
                                                     </div>
-                                                    <div id={"preference_div" + (index + 1)} className="user_set-profiles">
-                                                        {
-                                                            triggerPriceArray[index] ?
+                                                </Accordion.Header>
+                                                <Accordion.Body>
+                                                    <div>
+                                                        <div>
+                                                            <div>
+                                                                Product Name:
+                                                                <a className="prod_Links" rel="noreferrer" target="_blank" href={userData.tracker_details.track_links[index]}>
+                                                                    {product}
+                                                                </a>
+                                                            </div>
+                                                            <div>
+                                                                Product Current Price: {userData.tracker_details.product_prices[index]}
+                                                            </div>
+                                                        </div>
+                                                        <div id={"preference_div" + (index + 1)} className="user_set-profiles">
+                                                            {
+                                                                triggerPriceArray[index] ?
 
-                                                                <div id={"trigger_price_div" + (index + 1)}>
-                                                                    Trigger Price:
-                                                                    {userData.tracker_details.track_prices[index]}
-                                                                    <Button onClick={() => priceEditClickHandler(index)} variant="dark">
-                                                                        <FontAwesomeIcon icon={faPenToSquare} />
-                                                                    </Button>
-                                                                </div>
-                                                                :
-                                                                <input id={"dreamPrice" + index} min="0" placeholder='Dream Price' type="number" className="form-control" />
-                                                        }
-                                                        {
-                                                            triggerFreqArray[index] ?
-                                                                <div>
-                                                                    Trigger Frequency:
-                                                                    {userData.tracker_details.track_freq[index]} mins
-                                                                    <Button onClick={() => frequencyEditClickHandler(index)} variant="dark">
-                                                                        <FontAwesomeIcon icon={faPenToSquare} />
-                                                                    </Button>
-                                                                </div>
-                                                                :
-                                                                <input id={"frequency" + index} min="5" type="number" placeholder='Check Frequency (mins)' className="form-control" />
-                                                        }
+                                                                    <div id={"trigger_price_div" + (index + 1)}>
+                                                                        Trigger Price:
+                                                                        {userData.tracker_details.track_prices[index]}
+                                                                        <Button onClick={() => priceEditClickHandler(index)} variant="dark">
+                                                                            <FontAwesomeIcon icon={faPenToSquare} />
+                                                                        </Button>
+                                                                    </div>
+                                                                    :
+                                                                    <input id={"dreamPrice" + index} min="0" placeholder='Dream Price' type="number" className="form-control" />
+                                                            }
+                                                            {
+                                                                triggerFreqArray[index] ?
+                                                                    <div>
+                                                                        Trigger Frequency:
+                                                                        {userData.tracker_details.track_freq[index]} mins
+                                                                        <Button onClick={() => frequencyEditClickHandler(index)} variant="dark">
+                                                                            <FontAwesomeIcon icon={faPenToSquare} />
+                                                                        </Button>
+                                                                    </div>
+                                                                    :
+                                                                    <input id={"frequency" + index} min="5" type="number" placeholder='Check Frequency (mins)' className="form-control" />
+                                                            }
 
-                                                        <div>
-                                                            Last Triggered:
-                                                            {userData.tracker_details.last_triggeres[index] === "" ? " Not Triggered Yet" : userData.tracker_details.last_triggeres[index]}
-                                                        </div>
-                                                        <div>
-                                                            <Button onClick={() => saveClickHandler(index)} variant="primary">
-                                                                <FontAwesomeIcon icon={faSave} />
-                                                            </Button>
-                                                            <Button variant="danger">
-                                                                <FontAwesomeIcon icon={faTrash} />
-                                                            </Button>
+                                                            <div>
+                                                                Last Triggered:
+                                                                {userData.tracker_details.last_triggeres[index] === "" ? " Not Triggered Yet" : userData.tracker_details.last_triggeres[index]}
+                                                            </div>
+                                                            <div>
+                                                                <Button onClick={() => saveClickHandler(index)} variant="primary">
+                                                                    <FontAwesomeIcon icon={faSave} />
+                                                                </Button>
+                                                                <Button onClick={() => deleteClickHandler(index)} variant="danger">
+                                                                    <FontAwesomeIcon icon={faTrash} />
+                                                                </Button>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            </Accordion.Body>
-                                        </Accordion.Item>)
+                                                </Accordion.Body>
+                                            </Accordion.Item>
+                                        )
                                     })
                                 }
                             </Accordion>
