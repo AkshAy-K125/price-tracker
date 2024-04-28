@@ -57,6 +57,7 @@ const TrackingPage = ({ email_ID }) => {
             set_triggerPriceArray(new Array(location.state.document.tracker_details.track_prices.length).fill(1))
             set_triggerFreqArray(new Array(location.state.document.tracker_details.track_prices.length).fill(1))
             set_userData(location.state.document)
+            initialLoad.current = initialLoad.current + 1
         }
         else {
             const userDetailsFetch = async (id) => {
@@ -75,7 +76,6 @@ const TrackingPage = ({ email_ID }) => {
     useEffect(() => {
 
         if (userData && initialLoad.current === 1) {
-
             if (loadCount.current) {
                 apiCall_for_mongo("existing_user_update", email_ID, userData)
 
