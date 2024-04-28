@@ -87,9 +87,6 @@ const HomePage = ({ username, email_ID }) => {
 
         try {
             var jsonData = data;
-            console.log("in try")
-            console.log(data)
-            console.log(data.statusCode === 404)
 
             if (data.statusCode === 404) {
                 jsonData = JSON.parse(JSON.parse(jsonData['body']))
@@ -131,7 +128,7 @@ const HomePage = ({ username, email_ID }) => {
 
                 console.log(jsonData)
 
-                apiCall_for_mongo("existing_user_update", email_ID, jsonData)
+                apiCall_for_mongo("existing_user_update", email_ID, jsonData["document"])
 
                 setIsDataLoading(false);
 

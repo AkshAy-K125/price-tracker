@@ -7,7 +7,7 @@ import 'font-awesome/css/font-awesome.min.css';
 import { faPenToSquare, faSave, faTrash } from '@fortawesome/free-solid-svg-icons';
 
 import './trackingPage.css';
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 
 import { produce } from 'immer';
@@ -34,6 +34,7 @@ const apiCall_for_mongo = async (redirectParam, id, userData) => {
     try {
         const response = await fetch("https://fzy7wm6u0e.execute-api.ap-south-1.amazonaws.com/dev/", requestOptions)
         const result = await response.json();
+
         return JSON.parse(JSON.parse(result['body']))
     } catch (error) {
         console.error(error);
@@ -46,25 +47,43 @@ const TrackingPage = ({ email_ID }) => {
     const [userData, set_userData] = useState(null)
     const [triggerPriceArray, set_triggerPriceArray] = useState([])
     const [triggerFreqArray, set_triggerFreqArray] = useState([])
+    const loadCount = useRef(0)
+    const initialLoad = useRef(0)
     const location = useLocation();
 
     useEffect(() => {
 
         if (location.state !== null) {
+            set_triggerPriceArray(new Array(location.state.document.tracker_details.track_prices.length).fill(1))
+            set_triggerFreqArray(new Array(location.state.document.tracker_details.track_prices.length).fill(1))
             set_userData(location.state.document)
         }
         else {
             const userDetailsFetch = async (id) => {
-                const data = await apiCall_for_mongo("user_check", email_ID, userData)
+                const data = await apiCall_for_mongo("user_check", id, userData)
 
                 set_triggerPriceArray(new Array(data.document.tracker_details.track_prices.length).fill(1))
                 set_triggerFreqArray(new Array(data.document.tracker_details.track_prices.length).fill(1))
                 set_userData(data.document)
+                initialLoad.current = initialLoad.current + 1
             }
             userDetailsFetch(email_ID)
         }
 
     }, [email_ID, location.state])
+
+    useEffect(() => {
+
+        if (userData && initialLoad.current === 1) {
+
+            if (loadCount.current) {
+                apiCall_for_mongo("existing_user_update", email_ID, userData)
+
+            }
+            loadCount.current = loadCount.current + 1
+        }
+
+    }, [userData])
 
     const priceEditClickHandler = (preferenceDivID) => {
 
@@ -101,9 +120,10 @@ const TrackingPage = ({ email_ID }) => {
 
                     if (freqEle.value) { draft.tracker_details.track_freq[preferenceDivID] = parseFloat(freqEle.value) }
                 }
-            })
-        );
 
+
+            })
+        )
     }
 
     const deleteClickHandler = (preferenceDivID) => {
