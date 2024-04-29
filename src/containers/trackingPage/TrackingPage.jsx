@@ -12,21 +12,21 @@ import { useLocation } from "react-router-dom";
 
 import { produce } from 'immer';
 
-const apiCall_for_mongo = async (redirectParam, id, userData) => {
+const apiCall_for_mongo = async (redirectParam, id, data) => {
+
+    const myHeaders = new Headers();
+    myHeaders.append("x-api-key", process.env.REACT_APP_AWS_API_key);
+    myHeaders.append("Content-Type", "application/json");
 
     const raw = JSON.stringify({
         "function_redirect": redirectParam,
         "email_ID": id,
-        "user_data": userData
+        "user_data": data
     });
-
 
     const requestOptions = {
         method: "POST",
-        headers: {
-            'x-api-key': process.env.REACT_APP_AWS_API_key,
-            'Content-Type': 'application/json'
-        },
+        headers: myHeaders,
         body: raw,
         redirect: "follow"
     };
@@ -34,7 +34,6 @@ const apiCall_for_mongo = async (redirectParam, id, userData) => {
     try {
         const response = await fetch("https://fzy7wm6u0e.execute-api.ap-south-1.amazonaws.com/dev/", requestOptions)
         const result = await response.json();
-
         return JSON.parse(JSON.parse(result['body']))
     } catch (error) {
         console.error(error);
