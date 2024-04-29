@@ -73,7 +73,6 @@ const TrackingPage = ({ email_ID }) => {
     }, [email_ID, location.state])
 
     useEffect(() => {
-
         if (userData && initialLoad.current === 1) {
             if (loadCount.current) {
                 apiCall_for_mongo("existing_user_update", email_ID, userData)
