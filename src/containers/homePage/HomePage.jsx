@@ -152,7 +152,7 @@ const HomePage = ({ username, email_ID }) => {
                         <h3>
                             Hi, {username}
                         </h3>
-                        <p>Currently supported websites
+                        <p>Supported Websites
                             <button className='sitesInfoButton'>
                                 <FontAwesomeIcon icon={faInfoCircle} />
                             </button>

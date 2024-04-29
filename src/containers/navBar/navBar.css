@@ -1,0 +1,150 @@
+.nav_Container {
+    background: #0C1524;
+    display: flex;
+    justify-content: flex-end;
+    color: white;
+    height: 3rem;
+    align-items: center;
+}
+
+.navBar {
+    width: 40%;
+    float: right;
+}
+
+.nav_items {
+    display: flex;
+    justify-content: space-around;
+    margin: 0;
+}
+
+.nav_items a {
+    color: white;
+    text-decoration: none;
+}
+
+li {
+    font-family: sans-serif;
+    text-decoration: none;
+    list-style-type: none;
+    font-size: 18px;
+}
+
+li:hover {
+    color: white;
+    cursor: pointer;
+}
+
+
+.hover-underline-animation {
+    display: inline-block;
+    position: relative;
+}
+
+.hover-underline-animation::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    transform: scaleX(0);
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: white;
+    transform-origin: bottom right;
+    transition: transform 0.25s ease-out;
+}
+
+.hover-underline-animation:hover::after {
+    transform: scaleX(1);
+    transform-origin: bottom left;
+}
+
+.burger_Container {
+    display: none;
+    background: red;
+    float: right;
+    margin: 0.5rem;
+    padding: 1rem;
+}
+
+.burger_navBar {
+    display: none;
+    box-shadow: -18px 20px 300px 300px rgba(0, 0, 0, 0.25);
+
+}
+
+.burger button {
+    width: 2.5rem;
+    height: 2.5rem;
+    border: none;
+    margin: 0.5rem;
+    border-radius: 4px;
+    background: #0C1524;
+}
+
+.burger button hr {
+    border: none;
+    height: 3px;
+    background: white;
+    margin: 3px;
+}
+
+.sideButtonClose {
+    margin: 0.5rem;
+    font-size: x-large;
+    float: right;
+    background: none;
+    border: none;
+    color: white;
+}
+
+.sidePanelFlexContent {
+    display: flex;
+    flex-direction: column;
+}
+
+
+@media only screen and (max-width: 620px) {
+
+    .nav_Container {
+        display: none;
+    }
+
+    .burger_Container {
+        background: none;
+        display: flex;
+        width: 100%;
+        justify-content: flex-end;
+        margin: 0;
+        padding: 0;
+        position: fixed;
+        z-index: 6;
+    }
+
+    .burger_navBar {
+        display: flex;
+        height: 100vh;
+        position: fixed;
+        background: #0C1524;
+        top: 0;
+        display: block;
+        width: 60vw;
+        z-index: 5;
+    }
+
+    .burger_nav_items {
+        height: 40vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-evenly;
+        align-items: center;
+        padding: 0;
+        color: white;
+    }
+
+    .hover-underline-animation a {
+        color: white;
+        text-decoration: none;
+    }
+
+}

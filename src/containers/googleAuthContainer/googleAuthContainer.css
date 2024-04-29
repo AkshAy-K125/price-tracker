@@ -1,0 +1,11 @@
+.authBlock {
+    font-family: sans-serif;
+    text-align: center;
+    font-size: x-large;
+    word-wrap: break-word;
+    display: flex;
+    height: 80vh;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+}
