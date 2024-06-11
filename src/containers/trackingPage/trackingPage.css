@@ -11,3 +11,7 @@
     justify-content: space-around;
     align-items: center;
 }
+
+.trackContainer {
+    margin: 3.5rem 2rem;
+}

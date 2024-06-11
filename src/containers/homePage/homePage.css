@@ -4,7 +4,7 @@
     flex-direction: column;
     justify-content: space-evenly;
     align-items: center;
-    margin: 0 5rem;
+    margin: 3.5rem 5rem;
 }
 
 .home_container input {
@@ -18,4 +18,32 @@
     padding: 10px;
     background: none;
     color: #0d6efd;
+}
+
+.custom_modal {
+    position: fixed;
+    width: 7rem;
+    margin: 3rem 0;
+    border-radius: 10px;
+    background: white;
+}
+
+.custom_modal-content {
+    font-size: 12px;
+    text-align: center;
+    box-shadow: 1px 1px 2px 0px #0c15248f;
+    width: max-content;
+    padding: 0.25rem 1rem;
+    border-radius: 10px;
+    background: white;
+}
+
+.custom_modal-content p {
+    margin: 0;
+}
+
+.info_container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }

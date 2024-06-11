@@ -8,3 +8,7 @@
 .adBlock {
     background-color: grey;
 }
+
+body::-webkit-scrollbar {
+    display: none;
+}

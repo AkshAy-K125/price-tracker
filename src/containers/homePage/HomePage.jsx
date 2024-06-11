@@ -66,7 +66,14 @@ const apiCall_For_Scrapper = async (productInfo) => {
 const HomePage = ({ username, email_ID }) => {
 
     const navigate = useNavigate();
+    const [siteListClicked, setSiteListClicked] = useState(false)
     const [isDataLoading, setIsDataLoading] = useState(false);
+
+    const setSiteListClickedHandle = () => {
+        setSiteListClicked(!siteListClicked)
+    }
+
+
     const navigateToTracker = (result) => {
         navigate("/TrackingPage", { state: result });
     }
@@ -152,11 +159,27 @@ const HomePage = ({ username, email_ID }) => {
                         <h3>
                             Hi, {username}
                         </h3>
-                        <p>Supported Websites
-                            <button className='sitesInfoButton'>
-                                <FontAwesomeIcon icon={faInfoCircle} />
-                            </button>
-                        </p>
+                        <div className='info_container'>
+                            <div>Supported Websites
+                                <button onClick={setSiteListClickedHandle} className='sitesInfoButton'>
+                                    <FontAwesomeIcon icon={faInfoCircle} />
+                                </button>
+                            </div>
+                            {siteListClicked &&
+                                <div className='custom_modal'>
+                                    <div className='custom_modal-content'>
+                                        <p>Bahrain Greetings</p>
+                                        <p>Dukakeen</p>
+                                        <p>Live Well</p>
+                                        <p>Lulu Hypermarket</p>
+                                        <p>Namshi</p>
+                                        <p>Next Direct</p>
+                                        <p>Ootlah</p>
+                                        <p>Ounass</p>
+                                        <p>SharafDG</p>
+                                    </div>
+                                </div>}
+                        </div>
                         <input id='trackerURL' placeholder='Product Link' type="text" className="form-control" />
                         <input id='trackerPrice' min="0" placeholder='Dream Price' type="number" className="form-control" />
                         <input id='tackerFreq' min="5" type="number" placeholder='Check Frequency (mins)' className="form-control" />

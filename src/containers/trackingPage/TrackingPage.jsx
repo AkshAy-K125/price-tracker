@@ -141,7 +141,7 @@ const TrackingPage = ({ email_ID }) => {
     return (
         <>
             {userData &&
-                <div>
+                <div className="trackContainer">
                     <Fade>
                         <div id="trackingPage">
                             <Accordion defaultActiveKey="0">
