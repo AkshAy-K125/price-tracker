@@ -110,7 +110,8 @@ const HomePage = ({ username, email_ID }) => {
                             "track_prices": [parseFloat(productData["track_price"])],
                             "track_freq": [parseInt(productData["track_freq"], 10)],
                             "last_triggeres": [productData["last_trigger"]]
-                        }
+                        },
+                        "creds": 100.00
                     }
                 }
 

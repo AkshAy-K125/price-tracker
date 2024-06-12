@@ -1,9 +1,12 @@
 import { useState } from "react";
-import './navBar.css'
+import './navBar.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import 'font-awesome/css/font-awesome.min.css';
+import { faStar } from '@fortawesome/free-solid-svg-icons';
 // import { googleLogout } from '@react-oauth/google';
 import { Link } from 'react-router-dom'
 
-const Nav_bar = () => {
+const Nav_bar = ({ creds }) => {
     const [sidePanel, setSidePanel] = useState(false)
 
     const logOut = () => {
@@ -14,6 +17,10 @@ const Nav_bar = () => {
     return (
         <>
             <div className='nav_Container'>
+                <div className="cred_container">
+                    {creds ? creds : "Loading-creds"}
+                    <FontAwesomeIcon icon={faStar} />
+                </div>
                 <div className='navBar'>
                     <ul className='nav_items'>
                         <li className='hover-underline-animation'>
