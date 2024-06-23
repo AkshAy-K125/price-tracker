@@ -5,13 +5,13 @@ import { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 const App = ({ auth }) => {
-    // const user_data = jwtDecode(auth.credential)
+    const user_data = jwtDecode(auth.credential)
     const [creds, setCreds] = useState(null)
 
-    const user_data = {
-        given_name: "newUSer",
-        email: "newUser@gmail.com"
-    }
+    // const user_data = {
+    //     given_name: "newUSer",
+    //     email: "newUser@gmail.com"
+    // }
 
     const apiCall_for_mongo = async (redirectParam, id, userData) => {
 
