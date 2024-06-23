@@ -1,22 +1,18 @@
-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import './homePage.css'
+import './homePage.css';
 import { Fade } from "react-awesome-reveal";
 import Button from 'react-bootstrap/Button';
 import { useNavigate } from 'react-router-dom';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
-import { DNA } from 'react-loader-spinner'
+import { DNA } from 'react-loader-spinner';
 import { useState } from 'react';
 
-
 const apiCall_for_mongo = async (redirectParam, id, userData) => {
-
     const raw = JSON.stringify({
         "function_redirect": redirectParam,
         "email_ID": id,
         "user_data": userData
     });
-
 
     const requestOptions = {
         method: "POST",
@@ -29,17 +25,15 @@ const apiCall_for_mongo = async (redirectParam, id, userData) => {
     };
 
     try {
-        const response = await fetch("https://fzy7wm6u0e.execute-api.ap-south-1.amazonaws.com/dev/", requestOptions)
+        const response = await fetch("https://fzy7wm6u0e.execute-api.ap-south-1.amazonaws.com/dev/", requestOptions);
         const result = await response.json();
-        return (result);
+        return result;
     } catch (error) {
         console.error(error);
     }
 };
 
-
 const apiCall_For_Scrapper = async (productInfo) => {
-
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
@@ -53,101 +47,100 @@ const apiCall_For_Scrapper = async (productInfo) => {
     };
 
     try {
-        const response = await fetch("https://8nxfchxw8k.execute-api.ap-south-1.amazonaws.com/dev/", requestOptions)
+        const response = await fetch("https://8nxfchxw8k.execute-api.ap-south-1.amazonaws.com/dev/", requestOptions);
         const result = await response.json();
-        return (result);
+        return result;
     } catch (error) {
         console.error(error);
     }
 };
 
-
-
 const HomePage = ({ username, email_ID }) => {
-
     const navigate = useNavigate();
-    const [siteListClicked, setSiteListClicked] = useState(false)
+    const [siteListClicked, setSiteListClicked] = useState(false);
     const [isDataLoading, setIsDataLoading] = useState(false);
 
     const setSiteListClickedHandle = () => {
-        setSiteListClicked(!siteListClicked)
-    }
-
+        setSiteListClicked(!siteListClicked);
+    };
 
     const navigateToTracker = (result) => {
         navigate("/TrackingPage", { state: result });
-    }
+    };
 
     async function userDetailsFetch() {
         setIsDataLoading(true);
 
-        var productData = await apiCall_For_Scrapper(
-            {
-                "url": document.getElementById('trackerURL').value,
-                "tracker_price": document.getElementById('trackerPrice').value,
-                "frequency": document.getElementById('tackerFreq').value
-            }
-        )
-        productData = productData["data"]
+        const trackTimeTill = document.getElementById('trackTill').value
 
-        const data = await apiCall_for_mongo("user_check", email_ID, productData)
+        // Get the user's UTC offset in minutes
+        const offsetMinutes = new Date().getTimezoneOffset();
+
+        // Convert the offset to hours and minutes
+        const offsetHours = Math.floor(Math.abs(offsetMinutes) / 60);
+        const offsetMins = Math.abs(offsetMinutes) % 60;
+        const offsetSign = offsetMinutes > 0 ? "-" : "+";
+        const offsetString = `${offsetSign}${String(offsetHours).padStart(2, '0')}:${String(offsetMins).padStart(2, '0')}`;
+
+        const productData = await apiCall_For_Scrapper({
+            "url": document.getElementById('trackerURL').value,
+            "tracker_price": document.getElementById('trackerPrice').value,
+            "frequency": document.getElementById('tackerFreq').value,
+            "till": trackTimeTill + ":00.000" + offsetString
+        });
+
+        const data = await apiCall_for_mongo("user_check", email_ID, productData["data"]);
 
         try {
-            var jsonData = data;
+            let jsonData = data;
 
             if (data.statusCode === 404) {
-                jsonData = JSON.parse(JSON.parse(jsonData['body']))
-                console.log("adding New User")
+                jsonData = JSON.parse(JSON.parse(jsonData['body']));
+                console.log("adding New User");
 
-                var newUserData = {
+                const newUserData = {
                     "document": {
                         "name": username,
                         "email_ID": email_ID,
                         "tracker_details": {
-                            "product_titles": [productData["title"]],
-                            "product_prices": [parseFloat(productData["whole_price"])],
-                            "track_links": [productData["track_link"]],
-                            "track_prices": [parseFloat(productData["track_price"])],
-                            "track_freq": [parseInt(productData["track_freq"], 10)],
-                            "last_triggeres": [productData["last_trigger"]]
+                            "product_titles": [productData["data"]["title"]],
+                            "product_prices": [parseFloat(productData["data"]["whole_price"])],
+                            "track_links": [productData["data"]["track_link"]],
+                            "track_prices": [parseFloat(productData["data"]["track_price"])],
+                            "track_freq": [parseInt(productData["data"]["track_freq"], 10)],
+                            "track_till": productData["data"]["track_till"],
+                            "last_triggeres": [productData["data"]["last_trigger"]]
                         },
                         "creds": 100.00
                     }
-                }
+                };
 
-                console.log(newUserData)
-
-                apiCall_for_mongo("set_new_user", email_ID, newUserData)
-
+                apiCall_for_mongo("set_new_user", email_ID, newUserData);
                 setIsDataLoading(false);
+                navigateToTracker(newUserData);
 
-                navigateToTracker(newUserData)
-            }
-            else {
-                console.log("in else")
-                jsonData = JSON.parse(JSON.parse(jsonData['body']))
+            } else {
+                jsonData = JSON.parse(JSON.parse(jsonData['body']));
 
-                jsonData["document"]["tracker_details"]["last_triggeres"].push(productData["last_trigger"])
-                jsonData["document"]["tracker_details"]["product_prices"].push(parseFloat(productData["whole_price"]))
-                jsonData["document"]["tracker_details"]["product_titles"].push(productData["title"])
-                jsonData["document"]["tracker_details"]["track_freq"].push(parseInt(productData["track_freq"], 10))
-                jsonData["document"]["tracker_details"]["track_links"].push(productData["track_link"])
-                jsonData["document"]["tracker_details"]["track_prices"].push(parseFloat(productData["track_price"]))
+                jsonData["document"]["tracker_details"]["last_triggeres"].push(productData["data"]["last_trigger"]);
+                jsonData["document"]["tracker_details"]["product_prices"].push(parseFloat(productData["data"]["whole_price"]));
+                jsonData["document"]["tracker_details"]["product_titles"].push(productData["data"]["title"]);
+                jsonData["document"]["tracker_details"]["track_freq"].push(parseInt(productData["data"]["track_freq"], 10));
+                jsonData["document"]["tracker_details"]["track_links"].push(productData["data"]["track_link"]);
+                jsonData["document"]["tracker_details"]["track_prices"].push(parseFloat(productData["data"]["track_price"]));
+                jsonData["document"]["tracker_details"]["track_till"].push(productData["data"]["track_till"]);
 
-                console.log(jsonData)
+                console.log(jsonData);
+                console.log("entered else")
 
-                apiCall_for_mongo("existing_user_update", email_ID, jsonData["document"])
-
+                apiCall_for_mongo("existing_user_update", email_ID, jsonData["document"]);
                 setIsDataLoading(false);
-
-                navigateToTracker(jsonData)
+                navigateToTracker(jsonData);
             }
-        }
-        catch (e) {
-            console.log("entered catch")
-            console.log(jsonData)
-            console.log(e)
-
+        } catch (e) {
+            console.log("entered catch");
+            // console.log(jsonData);
+            console.log(e);
             setIsDataLoading(false);
         }
     }
@@ -157,9 +150,7 @@ const HomePage = ({ username, email_ID }) => {
             <div>
                 <Fade>
                     <div className="home_container">
-                        <h3>
-                            Hi, {username}
-                        </h3>
+                        <h3>Hi, {username}</h3>
                         <div className='info_container'>
                             <div>Supported Websites
                                 <button onClick={setSiteListClickedHandle} className='sitesInfoButton'>
@@ -184,6 +175,7 @@ const HomePage = ({ username, email_ID }) => {
                         <input id='trackerURL' placeholder='Product Link' type="text" className="form-control" />
                         <input id='trackerPrice' min="0" placeholder='Dream Price' type="number" className="form-control" />
                         <input id='tackerFreq' min="5" type="number" placeholder='Check Frequency (mins)' className="form-control" />
+                        <input id='trackTill' type="datetime-local" placeholder='Check till (Date Time)' className="form-control" />
                         {isDataLoading ? <DNA
                             visible={true}
                             height="20vh"
@@ -194,13 +186,12 @@ const HomePage = ({ username, email_ID }) => {
                         /> :
                             <Button variant="outline-primary" onClick={() => userDetailsFetch()}>Track</Button>
                         }
-                        <div className="adBlock">
-                        </div>
+                        <div className="adBlock"></div>
                     </div>
-                </Fade >
-            </div >
+                </Fade>
+            </div>
         </>
-    )
-}
+    );
+};
 
-export default HomePage
+export default HomePage;

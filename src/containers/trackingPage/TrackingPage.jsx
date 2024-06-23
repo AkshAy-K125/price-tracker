@@ -10,6 +10,9 @@ import './trackingPage.css';
 import { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 
+import { parseISO, format } from 'date-fns';
+import { formatInTimeZone } from 'date-fns-tz';
+
 import { produce } from 'immer';
 
 const apiCall_for_mongo = async (redirectParam, id, data) => {
@@ -40,6 +43,36 @@ const apiCall_for_mongo = async (redirectParam, id, data) => {
     }
 };
 
+const formatDateString = (isoString) => {
+
+    // Parse the ISO string into a Date object
+    const date = parseISO(isoString);
+
+    // Define a function to get the ordinal suffix
+    const getOrdinalSuffix = (day) => {
+        if (day > 3 && day < 21) return 'th';
+        switch (day % 10) {
+            case 1:
+                return 'st';
+            case 2:
+                return 'nd';
+            case 3:
+                return 'rd';
+            default:
+                return 'th';
+        }
+    };
+
+    // Format the date parts
+    const day = format(date, 'd');
+    const month = format(date, 'MMMM');
+    const year = format(date, 'yyyy');
+    const localTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const time = formatInTimeZone(date, localTimezone, 'h:mm a')
+
+    // Construct the formatted date string with the ordinal suffix
+    return `${day}${getOrdinalSuffix(day)} ${month} ${year} ${time}`;
+};
 
 const TrackingPage = ({ email_ID }) => {
 
@@ -49,6 +82,7 @@ const TrackingPage = ({ email_ID }) => {
     const loadCount = useRef(0)
     const initialLoad = useRef(0)
     const location = useLocation();
+    console.log(userData)
 
     useEffect(() => {
 
@@ -81,7 +115,7 @@ const TrackingPage = ({ email_ID }) => {
             loadCount.current = loadCount.current + 1
         }
 
-    }, [userData])
+    }, [userData, email_ID])
 
     const priceEditClickHandler = (preferenceDivID) => {
 
@@ -203,6 +237,12 @@ const TrackingPage = ({ email_ID }) => {
                                                             <div>
                                                                 Last Triggered:
                                                                 {userData.tracker_details.last_triggeres[index] === "" ? " Not Triggered Yet" : userData.tracker_details.last_triggeres[index]}
+                                                            </div>
+                                                            <div>
+                                                                Track Till:
+                                                                {
+                                                                    formatDateString(userData.tracker_details.track_till[index])
+                                                                }
                                                             </div>
                                                             <div>
                                                                 <Button onClick={() => saveClickHandler(index)} variant="primary">

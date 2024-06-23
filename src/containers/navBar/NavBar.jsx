@@ -18,7 +18,7 @@ const Nav_bar = ({ creds }) => {
         <>
             <div className='nav_Container'>
                 <div className="cred_container">
-                    {creds ? creds : "Loading-creds"}
+                    <div id="totalCreds">{creds ? creds : "Loading-creds"}</div>
                     <FontAwesomeIcon icon={faStar} />
                 </div>
                 <div className='navBar'>
@@ -54,6 +54,10 @@ const Nav_bar = ({ creds }) => {
                                     X
                                 </button>
                             </div>
+                            <div className="cred_container">
+                                <div id="totalCreds"> {creds ? creds : "Loading-creds"}</div>
+                                <FontAwesomeIcon icon={faStar} />
+                            </div>
                             <div>
                                 <ul className='burger_nav_items'>
                                     <li className='hover-underline-animation'>
@@ -67,6 +71,7 @@ const Nav_bar = ({ creds }) => {
                                     </li>
                                 </ul>
                             </div>
+
                         </div>
                     </div>
                 }

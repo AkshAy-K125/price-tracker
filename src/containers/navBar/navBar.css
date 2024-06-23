@@ -108,6 +108,9 @@ li:hover {
 }
 
 .cred_container {
+    display: flex;
+    margin: 0 1rem;
+    align-items: center;
     margin: 0 1rem;
 }
 
@@ -116,6 +119,12 @@ li:hover {
 
     .nav_Container {
         display: none;
+    }
+
+    .cred_container {
+        margin: 0;
+        color: white;
+        justify-content: center;
     }
 
     .burger_Container {
