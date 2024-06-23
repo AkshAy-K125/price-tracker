@@ -108,7 +108,7 @@ const HomePage = ({ username, email_ID }) => {
                             "track_links": [productData["data"]["track_link"]],
                             "track_prices": [parseFloat(productData["data"]["track_price"])],
                             "track_freq": [parseInt(productData["data"]["track_freq"], 10)],
-                            "track_till": productData["data"]["track_till"],
+                            "track_till": [productData["data"]["track_till"]],
                             "last_triggeres": [productData["data"]["last_trigger"]]
                         },
                         "creds": 100.00
