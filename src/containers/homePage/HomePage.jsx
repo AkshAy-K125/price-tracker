@@ -2,10 +2,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './homePage.css';
 import { Fade } from "react-awesome-reveal";
 import Button from 'react-bootstrap/Button';
-import { useNavigate } from 'react-router-dom';
+import { json, useNavigate } from 'react-router-dom';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { DNA } from 'react-loader-spinner';
 import { useState } from 'react';
+import { Modaldialogue } from "./../../components"
 
 const apiCall_for_mongo = async (redirectParam, id, userData) => {
     const raw = JSON.stringify({
@@ -55,10 +56,11 @@ const apiCall_For_Scrapper = async (productInfo) => {
     }
 };
 
-const HomePage = ({ username, email_ID }) => {
+const HomePage = ({ username, email_ID, setCreds }) => {
     const navigate = useNavigate();
     const [siteListClicked, setSiteListClicked] = useState(false);
     const [isDataLoading, setIsDataLoading] = useState(false);
+    const [modalShow, setModalShow] = useState(false);
 
     const setSiteListClickedHandle = () => {
         setSiteListClicked(!siteListClicked);
@@ -122,6 +124,23 @@ const HomePage = ({ username, email_ID }) => {
             } else {
                 jsonData = JSON.parse(JSON.parse(jsonData['body']));
 
+                // Termination point post Cred Check
+
+                const startDate = new Date();
+                const endDate = new Date(trackTimeTill);
+                const differenceInMilliseconds = endDate - startDate;
+                const differenceInMinutes = Math.floor(differenceInMilliseconds / (1000 * 60));
+
+                const freq = document.getElementById('tackerFreq').value
+
+                if (parseInt(differenceInMinutes / parseInt(freq, 10), 10) > jsonData["document"]["creds"]) {
+                    setCreds(jsonData["document"]["creds"])
+                    setIsDataLoading(false);
+                    setModalShow(true)
+
+                    return
+                }
+
                 jsonData["document"]["tracker_details"]["last_triggeres"].push(productData["data"]["last_trigger"]);
                 jsonData["document"]["tracker_details"]["product_prices"].push(parseFloat(productData["data"]["whole_price"]));
                 jsonData["document"]["tracker_details"]["product_titles"].push(productData["data"]["title"]);
@@ -130,23 +149,21 @@ const HomePage = ({ username, email_ID }) => {
                 jsonData["document"]["tracker_details"]["track_prices"].push(parseFloat(productData["data"]["track_price"]));
                 jsonData["document"]["tracker_details"]["track_till"].push(productData["data"]["track_till"]);
 
-                console.log(jsonData);
-                console.log("entered else")
-
+                setCreds(jsonData["document"]["creds"])
                 apiCall_for_mongo("existing_user_update", email_ID, jsonData["document"]);
                 setIsDataLoading(false);
                 navigateToTracker(jsonData);
             }
         } catch (e) {
-            console.log("entered catch");
-            // console.log(jsonData);
             console.log(e);
             setIsDataLoading(false);
         }
     }
 
     return (
-        <>
+        <>{modalShow ?
+            <Modaldialogue setModalShow={setModalShow} />
+            :
             <div>
                 <Fade>
                     <div className="home_container">
@@ -190,6 +207,7 @@ const HomePage = ({ username, email_ID }) => {
                     </div>
                 </Fade>
             </div>
+        }
         </>
     );
 };

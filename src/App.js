@@ -5,13 +5,15 @@ import { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 const App = ({ auth }) => {
-    const user_data = jwtDecode(auth.credential)
-    const [creds, setCreds] = useState(null)
+    // const user_data = jwtDecode(auth.credential)
 
-    // const user_data = {
-    //     given_name: "newUSer",
-    //     email: "newUser@gmail.com"
-    // }
+    const [creds, setCreds] = useState(null)
+    const [userInitialData, setuserInitialData] = useState(null)
+
+    const user_data = {
+        given_name: "newUSer",
+        email: "newUser@gmail.com"
+    }
 
     const apiCall_for_mongo = async (redirectParam, id, userData) => {
 
@@ -44,20 +46,13 @@ const App = ({ auth }) => {
     useEffect(() => {
         const userDetailsFetch = async (id) => {
             const data = await apiCall_for_mongo("user_check", user_data.email, null)
+            setuserInitialData(data)
             setCreds(JSON.parse(JSON.parse(data.body))["document"]["creds"])
         };
 
         userDetailsFetch();
 
-    })
-
-
-
-
-
-
-
-
+    }, [user_data.email])
 
 
     return (
@@ -65,8 +60,8 @@ const App = ({ auth }) => {
             <Router>
                 <NavBar creds={creds} />
                 <Routes>
-                    <Route path="/" element={<HomePage username={user_data.given_name} email_ID={user_data.email} />} />
-                    <Route path="/TrackingPage" element={<TrackingPage email_ID={user_data.email} />} />
+                    <Route path="/" element={<HomePage setCreds={setCreds} username={user_data.given_name} email_ID={user_data.email} />} />
+                    <Route path="/TrackingPage" element={<TrackingPage setuserInitialData={setuserInitialData} userInitialData={userInitialData} email_ID={user_data.email} />} />
                 </Routes>
             </Router>
         </>
