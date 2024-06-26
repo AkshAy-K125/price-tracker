@@ -15,12 +15,13 @@ const App = ({ auth }) => {
         email: "newUser@gmail.com"
     }
 
-    const apiCall_for_mongo = async (redirectParam, id, userData) => {
+    const apiCall_for_mongo = async (redirectParam, id, userData, index) => {
 
         const raw = JSON.stringify({
             "function_redirect": redirectParam,
             "email_ID": id,
-            "user_data": userData
+            "user_data": userData,
+            "index": index
         });
 
 
@@ -45,7 +46,8 @@ const App = ({ auth }) => {
 
     useEffect(() => {
         const userDetailsFetch = async (id) => {
-            const data = await apiCall_for_mongo("user_check", user_data.email, null)
+            const data = await apiCall_for_mongo("user_check", user_data.email, null, null)
+            console.log(data)
             setuserInitialData(data)
             setCreds(JSON.parse(JSON.parse(data.body))["document"]["creds"])
         };
