@@ -74,13 +74,12 @@ const formatDateString = (isoString) => {
     return `${day}${getOrdinalSuffix(day)} ${month} ${year} ${time}`;
 };
 
-const TrackingPage = ({ email_ID, userInitialData, setuserInitialData }) => {
+const TrackingPage = ({ apiCall_for_mongo, email_ID, userData, set_userData }) => {
     // console.log("component rendered")
 
-    userInitialData = JSON.parse(JSON.parse(userInitialData.body))
-    userInitialData = userInitialData.document
-
-    const [userData, set_userData] = useState(userInitialData)
+    // userInitialData = JSON.parse(JSON.parse(userInitialData.body))
+    // userInitialData = userInitialData.document
+    // const [userData, set_userData] = useState(userInitialData)
 
     const [triggerPriceArray, set_triggerPriceArray] =
         useState(new Array(userData.tracker_details.track_prices.length).fill(1))
@@ -89,6 +88,17 @@ const TrackingPage = ({ email_ID, userInitialData, setuserInitialData }) => {
         useState(new Array(userData.tracker_details.track_prices.length).fill(1))
 
     const [indexState, setindexState] = useState({ indexChanged: null, key: 0 })
+
+    useEffect(() => {
+
+        const userDetailsFetch = async () => {
+            var data = await apiCall_for_mongo("user_check", email_ID, null, null)
+            console.log(data)
+            data = JSON.parse(JSON.parse(data.body))
+            set_userData(data.document)
+        };
+        userDetailsFetch();
+    }, [])
 
     useEffect(() => {
         if (indexState.key) {

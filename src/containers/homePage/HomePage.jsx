@@ -2,17 +2,18 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './homePage.css';
 import { Fade } from "react-awesome-reveal";
 import Button from 'react-bootstrap/Button';
-import { json, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { DNA } from 'react-loader-spinner';
 import { useState } from 'react';
 import { Modaldialogue } from "./../../components"
 
-const apiCall_for_mongo = async (redirectParam, id, userData) => {
+const apiCall_for_mongo = async (redirectParam, id, userData, index) => {
     const raw = JSON.stringify({
         "function_redirect": redirectParam,
         "email_ID": id,
-        "user_data": userData
+        "user_data": userData,
+        "index": index
     });
 
     const requestOptions = {
@@ -56,7 +57,8 @@ const apiCall_For_Scrapper = async (productInfo) => {
     }
 };
 
-const HomePage = ({ username, email_ID, setCreds }) => {
+const HomePage = ({ username, email_ID, setCreds, setUserData }) => {
+
     const navigate = useNavigate();
     const [siteListClicked, setSiteListClicked] = useState(false);
     const [isDataLoading, setIsDataLoading] = useState(false);
@@ -91,7 +93,8 @@ const HomePage = ({ username, email_ID, setCreds }) => {
             "till": trackTimeTill + ":00.000" + offsetString
         });
 
-        const data = await apiCall_for_mongo("user_check", email_ID, productData["data"]);
+        const data = await apiCall_for_mongo("user_check", email_ID, productData["data"], null);
+        console.log(data)
 
         try {
             let jsonData = data;
@@ -122,9 +125,10 @@ const HomePage = ({ username, email_ID, setCreds }) => {
                 navigateToTracker(newUserData);
 
             } else {
+                console.log(jsonData['body'])
                 jsonData = JSON.parse(JSON.parse(jsonData['body']));
 
-                // Termination point post Cred Check
+                // Termination check point post Cred Check
 
                 const startDate = new Date();
                 const endDate = new Date(trackTimeTill);
@@ -141,6 +145,8 @@ const HomePage = ({ username, email_ID, setCreds }) => {
                     return
                 }
 
+                // Terminationcheck point post Cred Check ends here
+
                 jsonData["document"]["tracker_details"]["last_triggeres"].push(productData["data"]["last_trigger"]);
                 jsonData["document"]["tracker_details"]["product_prices"].push(parseFloat(productData["data"]["whole_price"]));
                 jsonData["document"]["tracker_details"]["product_titles"].push(productData["data"]["title"]);
@@ -149,8 +155,21 @@ const HomePage = ({ username, email_ID, setCreds }) => {
                 jsonData["document"]["tracker_details"]["track_prices"].push(parseFloat(productData["data"]["track_price"]));
                 jsonData["document"]["tracker_details"]["track_till"].push(productData["data"]["track_till"]);
 
-                setCreds(jsonData["document"]["creds"])
-                apiCall_for_mongo("existing_user_update", email_ID, jsonData["document"]);
+                var index = jsonData["document"]["tracker_details"]["track_prices"].length - 1;
+
+
+                setCreds(jsonData["document"]["creds"]);
+
+                // apicallsignature is --> apiCall_for_mongo(redirect_Param, email_ID,user_data,index)
+
+                console.log("data sent to api mongo is")
+                console.log(jsonData["document"])
+
+                apiCall_for_mongo("existing_user_update",
+                    email_ID,
+                    jsonData["document"],
+                    index);
+
                 setIsDataLoading(false);
                 navigateToTracker(jsonData);
             }

@@ -46,10 +46,11 @@ const App = ({ auth }) => {
 
     useEffect(() => {
         const userDetailsFetch = async (id) => {
-            const data = await apiCall_for_mongo("user_check", user_data.email, null, null)
+            var data = await apiCall_for_mongo("user_check", user_data.email, null, null)
             console.log(data)
-            setuserInitialData(data)
-            setCreds(JSON.parse(JSON.parse(data.body))["document"]["creds"])
+            data = JSON.parse(JSON.parse(data.body))
+            setuserInitialData(data.document)
+            setCreds(data["document"]["creds"])
         };
 
         userDetailsFetch();
@@ -62,8 +63,8 @@ const App = ({ auth }) => {
             <Router>
                 <NavBar creds={creds} />
                 <Routes>
-                    <Route path="/" element={<HomePage setCreds={setCreds} username={user_data.given_name} email_ID={user_data.email} />} />
-                    <Route path="/TrackingPage" element={<TrackingPage setuserInitialData={setuserInitialData} userInitialData={userInitialData} email_ID={user_data.email} />} />
+                    <Route path="/" element={<HomePage setUserData={setuserInitialData} setCreds={setCreds} username={user_data.given_name} email_ID={user_data.email} />} />
+                    <Route path="/TrackingPage" element={<TrackingPage apiCall_for_mongo={apiCall_for_mongo} set_userData={setuserInitialData} userData={userInitialData} email_ID={user_data.email} />} />
                 </Routes>
             </Router>
         </>
