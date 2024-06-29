@@ -14,34 +14,6 @@ import { formatInTimeZone } from 'date-fns-tz';
 
 import { produce } from 'immer';
 
-// const apiCall_for_mongo = async (redirectParam, id, data,index) => {
-
-//     const myHeaders = new Headers();
-//     myHeaders.append("x-api-key", process.env.REACT_APP_AWS_API_key);
-//     myHeaders.append("Content-Type", "application/json");
-
-// const raw = JSON.stringify({
-//     "function_redirect": redirectParam,
-//     "email_ID": id,
-//     "user_data": data,
-//     "index": index
-// });
-
-//     const requestOptions = {
-//         method: "POST",
-//         headers: myHeaders,
-//         body: raw,
-//         redirect: "follow"
-//     };
-
-//     try {
-//         const response = await fetch("https://fzy7wm6u0e.execute-api.ap-south-1.amazonaws.com/dev/", requestOptions)
-//         const result = await response.json();
-//         return JSON.parse(JSON.parse(result['body']))
-//     } catch (error) {
-//         console.error(error);
-//     }
-// };
 
 const formatDateString = (isoString) => {
 
@@ -75,11 +47,6 @@ const formatDateString = (isoString) => {
 };
 
 const TrackingPage = ({ apiCall_for_mongo, email_ID, userData, set_userData }) => {
-    // console.log("component rendered")
-
-    // userInitialData = JSON.parse(JSON.parse(userInitialData.body))
-    // userInitialData = userInitialData.document
-    // const [userData, set_userData] = useState(userInitialData)
 
     const [triggerPriceArray, set_triggerPriceArray] =
         useState(new Array(userData.tracker_details.track_prices.length).fill(1))
@@ -87,7 +54,11 @@ const TrackingPage = ({ apiCall_for_mongo, email_ID, userData, set_userData }) =
     const [triggerFreqArray, set_triggerFreqArray] =
         useState(new Array(userData.tracker_details.track_prices.length).fill(1))
 
-    const [indexState, setindexState] = useState({ indexChanged: null, key: 0 })
+    const [indexState, setindexState] = useState({
+        indexChanged: null,
+        clickedParam: null,
+        key: 0
+    })
 
     useEffect(() => {
 
@@ -101,7 +72,17 @@ const TrackingPage = ({ apiCall_for_mongo, email_ID, userData, set_userData }) =
     }, [])
 
     useEffect(() => {
+        console.log(indexState)
         if (indexState.key) {
+            if (indexState.clickedParam === "delete") {
+                const delete_product_data = async () => {
+                    var data = await apiCall_for_mongo("tracker_data_delete", email_ID, userData, indexState.indexChanged)
+                };
+                delete_product_data();
+            }
+            else {
+                console.log("tracker_data_edit will be called")
+            }
             console.log("api triggered for index " + indexState.indexChanged)
         }
     }, [indexState])
@@ -136,17 +117,15 @@ const TrackingPage = ({ apiCall_for_mongo, email_ID, userData, set_userData }) =
 
                     if (freqEle.value) { draft.tracker_details.track_freq[preferenceDivID] = parseFloat(freqEle.value) }
                 }
+
+                setindexState(produce(draft => {
+                    draft.indexChanged = preferenceDivID;
+                    draft.clickedParam = "save"
+                    draft.key += 1;
+                }));
+
             })
         )
-
-        setindexState(produce(draft => {
-            draft.indexChanged = preferenceDivID;
-            draft.key += 1;
-        }));
-
-        //API call mongo for save
-
-
 
     }
 
@@ -159,17 +138,14 @@ const TrackingPage = ({ apiCall_for_mongo, email_ID, userData, set_userData }) =
                     draft.tracker_details[ele].splice(preferenceDivID, 1);
                 }
 
+                setindexState(produce(draft => {
+                    draft.indexChanged = preferenceDivID;
+                    draft.key += 1;
+                    draft.clickedParam = "delete"
+                }));
             })
         );
-
-        setindexState(produce(draft => {
-            draft.indexChanged = preferenceDivID;
-            draft.key += 1;
-        }));
-
-        //API call mongo for delete
     }
-
 
     return (
         <>
