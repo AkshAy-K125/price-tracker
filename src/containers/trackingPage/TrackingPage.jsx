@@ -75,13 +75,16 @@ const TrackingPage = ({ apiCall_for_mongo, email_ID, userData, set_userData }) =
         console.log(indexState)
         if (indexState.key) {
             if (indexState.clickedParam === "delete") {
-                const delete_product_data = async () => {
-                    var data = await apiCall_for_mongo("tracker_data_delete", email_ID, userData, indexState.indexChanged)
+                const delete_product_data = () => {
+                    apiCall_for_mongo("tracker_data_delete", email_ID, userData, indexState.indexChanged)
                 };
                 delete_product_data();
             }
             else {
-                console.log("tracker_data_edit will be called")
+                const edit_product_data = () => {
+                    apiCall_for_mongo("tracker_data_edit", email_ID, userData, indexState.indexChanged)
+                };
+                edit_product_data();
             }
             console.log("api triggered for index " + indexState.indexChanged)
         }
@@ -105,6 +108,7 @@ const TrackingPage = ({ apiCall_for_mongo, email_ID, userData, set_userData }) =
             produce(userData, (draft) => {
                 var priceEle = document.getElementById("dreamPrice" + preferenceDivID)
                 var freqEle = document.getElementById("frequency" + preferenceDivID)
+                var tillDateEle = document.getElementById("tracktill" + preferenceDivID)
 
                 if (priceEle) {
                     priceEditClickHandler(preferenceDivID)
@@ -116,6 +120,21 @@ const TrackingPage = ({ apiCall_for_mongo, email_ID, userData, set_userData }) =
                     frequencyEditClickHandler(preferenceDivID)
 
                     if (freqEle.value) { draft.tracker_details.track_freq[preferenceDivID] = parseFloat(freqEle.value) }
+                }
+
+                if (tillDateEle) {
+                    if (tillDateEle.value) {
+                        // Get the user's UTC offset in minutes
+                        const offsetMinutes = new Date().getTimezoneOffset();
+
+                        // Convert the offset to hours and minutes
+                        const offsetHours = Math.floor(Math.abs(offsetMinutes) / 60);
+                        const offsetMins = Math.abs(offsetMinutes) % 60;
+                        const offsetSign = offsetMinutes > 0 ? "-" : "+";
+                        const offsetString = `${offsetSign}${String(offsetHours).padStart(2, '0')}:${String(offsetMins).padStart(2, '0')}`;
+
+                        draft.tracker_details.track_till[preferenceDivID] = tillDateEle.value + ":00.000" + offsetString
+                    }
                 }
 
                 setindexState(produce(draft => {
@@ -214,9 +233,16 @@ const TrackingPage = ({ apiCall_for_mongo, email_ID, userData, set_userData }) =
                                                                 {userData.tracker_details.last_triggeres[index] === "" ? " Not Triggered Yet" : userData.tracker_details.last_triggeres[index]}
                                                             </div>
                                                             <div>
-                                                                Track Till:
                                                                 {
-                                                                    formatDateString(userData.tracker_details.track_till[index])
+                                                                    (triggerFreqArray[index] && triggerPriceArray[index]) ?
+                                                                        <div>
+                                                                            Track Till:
+                                                                            {
+                                                                                formatDateString(userData.tracker_details.track_till[index])
+                                                                            }
+                                                                        </div>
+                                                                        :
+                                                                        <input id={"tracktill" + index} type="datetime-local" placeholder='Check till (Date Time)' className="form-control" />
                                                                 }
                                                             </div>
                                                             <div>
