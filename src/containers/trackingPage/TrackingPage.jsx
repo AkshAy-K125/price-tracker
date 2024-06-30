@@ -13,6 +13,7 @@ import { parseISO, format } from 'date-fns';
 import { formatInTimeZone } from 'date-fns-tz';
 
 import { produce } from 'immer';
+import { useLocation } from 'react-router-dom';
 
 
 const formatDateString = (isoString) => {
@@ -60,6 +61,9 @@ const TrackingPage = ({ apiCall_for_mongo, email_ID, userData, set_userData }) =
         key: 0
     })
 
+    const location = useLocation();
+    const result = location.state.result;
+
     useEffect(() => {
 
         const userDetailsFetch = async () => {
@@ -68,7 +72,14 @@ const TrackingPage = ({ apiCall_for_mongo, email_ID, userData, set_userData }) =
             data = JSON.parse(JSON.parse(data.body))
             set_userData(data.document)
         };
-        userDetailsFetch();
+
+        console.log(result)
+
+        if (!result) {
+            userDetailsFetch();
+        }
+
+
     }, [])
 
     useEffect(() => {
