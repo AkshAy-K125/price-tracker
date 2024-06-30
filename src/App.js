@@ -48,7 +48,7 @@ const App = ({ auth }) => {
         const userDetailsFetch = async (id) => {
             var data = await apiCall_for_mongo("user_check", user_data.email, null, null)
 
-            data = JSON.parse(JSON.parse(data.body))
+            data = JSON.parse(JSON.parse(data))
             console.log(data)
             console.log(data.statusCode)
 
@@ -56,7 +56,7 @@ const App = ({ auth }) => {
                 setCreds(100)
             }
             else {
-                setuserInitialData(data.document)
+                setuserInitialData(data.body.document)
                 setCreds(data["document"]["creds"])
             }
         };
