@@ -121,7 +121,9 @@ const HomePage = ({ username, email_ID, setCreds, setUserData }) => {
                 };
 
                 apiCall_for_mongo("set_new_user", email_ID, newUserData);
+                setCreds(100)
                 setIsDataLoading(false);
+                setUserData(newUserData)
                 navigateToTracker(newUserData);
 
             } else {
