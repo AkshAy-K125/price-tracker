@@ -49,6 +49,15 @@ const formatDateString = (isoString) => {
 
 const TrackingPage = ({ apiCall_for_mongo, email_ID, userData, set_userData }) => {
 
+    const location = useLocation();
+    const result = location.state.result;
+
+    console.log(result)
+
+    // if (!result) {
+    //     userDetailsFetch();
+    // }
+
     const [triggerPriceArray, set_triggerPriceArray] =
         useState(new Array(userData.tracker_details.track_prices.length).fill(1))
 
@@ -61,9 +70,6 @@ const TrackingPage = ({ apiCall_for_mongo, email_ID, userData, set_userData }) =
         key: 0
     })
 
-    const location = useLocation();
-    const result = location.state.result;
-
     useEffect(() => {
 
         const userDetailsFetch = async () => {
@@ -72,13 +78,6 @@ const TrackingPage = ({ apiCall_for_mongo, email_ID, userData, set_userData }) =
             data = JSON.parse(JSON.parse(data.body))
             set_userData(data.document)
         };
-
-        console.log(result)
-
-        if (!result) {
-            userDetailsFetch();
-        }
-
 
     }, [])
 

@@ -48,9 +48,6 @@ const App = ({ auth }) => {
         const userDetailsFetch = async (id) => {
             var data = await apiCall_for_mongo("user_check", user_data.email, null, null)
 
-            console.log(data)
-            console.log(data.statusCode)
-
             if (data.statusCode === 404) {
                 setCreds(100)
             }
