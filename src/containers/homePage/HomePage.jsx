@@ -121,10 +121,10 @@ const HomePage = ({ username, email_ID, setCreds, setUserData }) => {
                     }
                 };
 
-                apiCall_for_mongo("set_new_user", email_ID, newUserData);
+                apiCall_for_mongo("set_new_user", email_ID, newUserData, 0);
                 setIsDataLoading(false);
-                // setUserData(newUserData)
-                navigateToTracker(newUserData);
+                setUserData(newUserData.document)
+                navigateToTracker(newUserData.document);
 
             } else {
                 console.log(jsonData['body'])
@@ -173,6 +173,7 @@ const HomePage = ({ username, email_ID, setCreds, setUserData }) => {
                     index);
 
                 setIsDataLoading(false);
+                setUserData(jsonData.document)
                 navigateToTracker(jsonData);
             }
         } catch (e) {

@@ -48,21 +48,21 @@ const formatDateString = (isoString) => {
 };
 
 const TrackingPage = ({ apiCall_for_mongo, email_ID, userData, set_userData }) => {
+    console.log(email_ID)
+    console.log(userData)
 
-    const location = useLocation();
-    const result = location.state.result;
+    const userDetailsFetch = async () => {
+        console.log("userdatafetch")
+        var data = await apiCall_for_mongo("user_check", email_ID, null, null)
+        console.log(data)
+        data = JSON.parse(JSON.parse(data.body))
+        set_userData(data.document)
+    };
 
-    console.log(result)
 
-    // if (!result) {
-    //     userDetailsFetch();
-    // }
+    const [triggerPriceArray, set_triggerPriceArray] = useState([])
 
-    const [triggerPriceArray, set_triggerPriceArray] =
-        useState(new Array(userData.tracker_details.track_prices.length).fill(1))
-
-    const [triggerFreqArray, set_triggerFreqArray] =
-        useState(new Array(userData.tracker_details.track_prices.length).fill(1))
+    const [triggerFreqArray, set_triggerFreqArray] = useState([])
 
     const [indexState, setindexState] = useState({
         indexChanged: null,
@@ -71,14 +71,14 @@ const TrackingPage = ({ apiCall_for_mongo, email_ID, userData, set_userData }) =
     })
 
     useEffect(() => {
-
-        const userDetailsFetch = async () => {
-            var data = await apiCall_for_mongo("user_check", email_ID, null, null)
-            console.log(data)
-            data = JSON.parse(JSON.parse(data.body))
-            set_userData(data.document)
-        };
-
+        if (!(userData === null)) {
+            set_triggerPriceArray([new Array(userData.tracker_details.track_prices.length).fill(1)])
+            set_triggerFreqArray([new Array(userData.tracker_details.track_prices.length).fill(1)])
+        }
+        else {
+            userDetailsFetch();
+        }
+        console.log("usereffect triggered")
     }, [])
 
     useEffect(() => {
@@ -178,7 +178,7 @@ const TrackingPage = ({ apiCall_for_mongo, email_ID, userData, set_userData }) =
 
     return (
         <>
-            {userData &&
+            {!(userData === null) && userData.tracker_details.track_prices.length ?
                 <div className="trackContainer">
                     <Fade>
                         <div id="trackingPage">
@@ -248,7 +248,7 @@ const TrackingPage = ({ apiCall_for_mongo, email_ID, userData, set_userData }) =
                                                                         <div>
                                                                             Track Till:
                                                                             {
-                                                                                formatDateString(userData.tracker_details.track_till[index])
+                                                                                userData.tracker_details.track_till[index] ? formatDateString(userData.tracker_details.track_till[index]) : "NA"
                                                                             }
                                                                         </div>
                                                                         :
@@ -273,6 +273,10 @@ const TrackingPage = ({ apiCall_for_mongo, email_ID, userData, set_userData }) =
                             </Accordion>
                         </div>
                     </Fade>
+                </div>
+                :
+                <div className="initial-noData_Display">
+                    Please add Trackers to display here
                 </div>
             }
         </>

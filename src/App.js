@@ -5,15 +5,20 @@ import { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 const App = ({ auth }) => {
-    const user_data = jwtDecode(auth.credential)
+    // const user_data = jwtDecode(auth.credential)
 
     const [creds, setCreds] = useState(null)
     const [userInitialData, setuserInitialData] = useState(null)
 
     // const user_data = {
-    //     given_name: "newUSer",
+    //     name: "newUser",
     //     email: "newUser@gmail.com"
     // }
+
+    const user_data = {
+        name: "Akshay",
+        email: "akshaysparks125@gmail.com"
+    }
 
     const apiCall_for_mongo = async (redirectParam, id, userData, index) => {
 
@@ -68,7 +73,7 @@ const App = ({ auth }) => {
             <Router>
                 <NavBar creds={creds} />
                 <Routes>
-                    <Route path="/" element={<HomePage setUserData={setuserInitialData} setCreds={setCreds} username={user_data.given_name} email_ID={user_data.email} />} />
+                    <Route path="/" element={<HomePage setUserData={setuserInitialData} setCreds={setCreds} username={user_data.name} email_ID={user_data.email} />} />
                     <Route path="/TrackingPage" element={<TrackingPage apiCall_for_mongo={apiCall_for_mongo} set_userData={setuserInitialData} userData={userInitialData} email_ID={user_data.email} />} />
                 </Routes>
             </Router>
